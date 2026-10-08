@@ -1,5 +1,5 @@
 /*
- * Mail Skin cho Messenger — lõi dùng chung giữa các module content script.
+ * Work Mode Fake — lõi dùng chung giữa các module content script.
  *
  * Nguyên tắc chống vỡ khi Meta đổi giao diện:
  *  - Không dựa vào class CSS bị làm rối của Messenger.

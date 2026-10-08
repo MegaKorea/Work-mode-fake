@@ -1,4 +1,4 @@
-﻿# Mail Skin cho Messenger
+﻿# Work Mode Fake
 
 Tiện ích Chrome khoác giao diện kiểu hộp thư Gmail lên Messenger web
 (`messenger.com` và `facebook.com/messages`). Chỉ đổi giao diện trên máy bạn, không gửi dữ liệu đi đâu.

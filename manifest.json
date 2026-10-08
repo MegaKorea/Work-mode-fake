@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Mail Skin cho Messenger",
+  "name": "Work Mode Fake",
   "version": "1.1.0",
-  "description": "Khoác giao diện kiểu hộp thư Gmail lên Messenger web (messenger.com và facebook.com/messages).",
+  "description": "Khoác giao diện hộp thư (Gmail, Outlook) lên Messenger web (messenger.com và facebook.com/messages).",
   "permissions": ["storage"],
   "icons": {
     "16": "icons/icon16.png",
@@ -11,7 +11,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "Mail Skin cho Messenger",
+    "default_title": "Work Mode Fake",
     "default_popup": "src/popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
