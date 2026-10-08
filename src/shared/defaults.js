@@ -16,7 +16,13 @@ GMS.DEFAULTS = Object.freeze({
  */
 GMS.THEMES = Object.freeze([
   { id: 'gmail', name: 'Gmail', desc: 'Hộp thư kiểu Gmail', ready: true },
-  { id: 'outlook', name: 'Outlook', desc: 'Hộp thư kiểu Outlook', ready: false },
+  { id: 'outlook', name: 'Outlook', desc: 'Hộp thư kiểu Outlook', ready: true },
   { id: 'docs', name: 'Tài liệu', desc: 'Trình soạn thảo văn bản', ready: false },
   { id: 'sheets', name: 'Bảng tính', desc: 'Bảng tính nhiều cột', ready: false },
 ]);
+
+// Tiêu đề tab mặc định theo giao diện (dùng khi người dùng chưa tự đổi `titleTpl`).
+GMS.THEME_TITLES = Object.freeze({
+  gmail: GMS.DEFAULTS.titleTpl,
+  outlook: 'Thư - Outlook',
+});

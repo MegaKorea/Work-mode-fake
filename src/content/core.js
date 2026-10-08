@@ -29,5 +29,7 @@
   GMS.isMsgPage = () =>
     /(^|\.)messenger\.com$/.test(location.hostname) ||
     /^\/messages(\/|$)/.test(location.pathname);
-  GMS.active = () => GMS.settings.enabled && GMS.isMsgPage();
+  // Giao diện đang dùng (mục chưa `ready` rơi về mặc định).
+  GMS.theme = () => (GMS.THEMES.find((t) => t.id === GMS.settings.theme && t.ready) || GMS.THEMES[0]).id;
+  GMS.active =() => GMS.settings.enabled && GMS.isMsgPage();
 })();

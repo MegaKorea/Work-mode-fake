@@ -7,7 +7,8 @@
   GMS.setTitle = (unread) => {
     if (!GMS.active()) return;
     const n = unread ?? state.threads.filter((t) => t.unread).length;
-    let t = (settings.titleTpl || GMS.DEFAULTS.titleTpl).replace('{n}', GMS.fmtN(n));
+    const custom = settings.titleTpl && settings.titleTpl !== GMS.DEFAULTS.titleTpl;
+    let t = (custom ? settings.titleTpl : GMS.THEME_TITLES[GMS.theme()]).replace('{n}', GMS.fmtN(n));
     if (!n) t = t.replace(/\s*\(\s*0\s*\)/, '').replace(/\s*\(\)\s*/, ' ');
     if (document.title !== t) { settingTitle = true; document.title = t; settingTitle = false; }
   };
@@ -20,16 +21,18 @@
 
   GMS.setFavicon = () => {
     if (!settings.favicon) { GMS.restoreFavicon(); return; }
+    const fav = GMS.FAVICONS[GMS.theme()];
+    const ours = Object.values(GMS.FAVICONS);
     const links = document.querySelectorAll('link[rel~="icon"]');
     if (!links.length && document.head) {
       const l = document.createElement('link');
-      l.rel = 'icon'; l.dataset.gmsAdded = '1'; l.href = GMS.FAVICON;
+      l.rel = 'icon'; l.dataset.gmsAdded = '1'; l.href = fav;
       document.head.appendChild(l);
       return;
     }
     links.forEach((l) => {
-      if (!l.dataset.gmsOrig && l.href !== GMS.FAVICON) l.dataset.gmsOrig = l.href;
-      if (l.href !== GMS.FAVICON) l.href = GMS.FAVICON;
+      if (!l.dataset.gmsOrig && !ours.includes(l.href)) l.dataset.gmsOrig = l.href;
+      if (l.href !== fav) l.href = fav;
     });
   };
 

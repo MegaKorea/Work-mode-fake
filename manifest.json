@@ -33,6 +33,7 @@
         "src/content/utils.js",
         "src/content/fonts.js",
         "src/content/parser.js",
+        "src/content/outlook.js",
         "src/content/shell.js",
         "src/content/thread.js",
         "src/content/page.js",
@@ -41,7 +42,8 @@
       "css": [
         "src/styles/tokens.css",
         "src/styles/page.css",
-        "src/styles/thread.css"
+        "src/styles/thread.css",
+        "src/styles/outlook-page.css"
       ],
       "run_at": "document_start",
       "all_frames": false
@@ -49,7 +51,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["fonts/*.woff2", "src/styles/shell.css"],
+      "resources": ["fonts/*.woff2", "src/styles/shell.css", "src/styles/outlook.css"],
       "matches": [
         "https://www.messenger.com/*",
         "https://www.facebook.com/*",

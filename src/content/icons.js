@@ -45,6 +45,8 @@
     less: 'M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z',
   });
 
+  GMS.ICON_PATHS = PATHS; // cho các theme khác bổ sung icon
+
   GMS.ico = (name, cls = '') =>
     `<svg class="gms-ico ${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="${PATHS[name]}"/></svg>`;
 
@@ -63,7 +65,18 @@
     '<stop offset="0" stop-color="#1c7dff"/><stop offset=".55" stop-color="#4f8cf5"/><stop offset="1" stop-color="#a07cf0"/></linearGradient></defs>' +
     '<path fill="url(#gms-g)" d="M12 1.5c.6 6.2 4.3 9.9 10.5 10.5-6.2.6-9.9 4.3-10.5 10.5-.6-6.2-4.3-9.9-10.5-10.5C7.7 11.4 11.4 7.7 12 1.5z"/></svg>';
 
-  GMS.FAVICON =
-    'data:image/svg+xml,' +
-    encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="52 42 88 66">${GMAIL_PATHS}</svg>`);
+  const OUTLOOK_FAV =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
+    '<rect x="10" y="5" width="20" height="22" rx="2.5" fill="#28a8ea"/>' +
+    '<path d="M10 9l10 7 10-7v-1.5A2.5 2.5 0 0027.5 5h-15A2.5 2.5 0 0010 7.5z" fill="#50d9ff"/>' +
+    '<path d="M10 11l10 7 10-7v14a2 2 0 01-2 2H12a2 2 0 01-2-2z" fill="#0364b8" opacity=".85"/>' +
+    '<rect x="1" y="8" width="17" height="16" rx="2.5" fill="#0f6cbd"/>' +
+    '<ellipse cx="9.5" cy="16" rx="4" ry="4.6" fill="none" stroke="#fff" stroke-width="2.2"/></svg>';
+
+  GMS.FAVICONS = {
+    gmail: 'data:image/svg+xml,' +
+      encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="52 42 88 66">${GMAIL_PATHS}</svg>`),
+    outlook: 'data:image/svg+xml,' + encodeURIComponent(OUTLOOK_FAV),
+  };
+  GMS.OUTLOOK_LOGO = OUTLOOK_FAV.replace('<svg ', '<svg class="o-logo" ');
 })();

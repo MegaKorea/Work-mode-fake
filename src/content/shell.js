@@ -122,11 +122,12 @@
     const sr = ui.host.attachShadow({ mode: 'open' });
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = chrome.runtime.getURL('src/styles/shell.css');
+    const outlook = GMS.theme() === 'outlook';
+    css.href = chrome.runtime.getURL(outlook ? 'src/styles/outlook.css' : 'src/styles/shell.css');
     css.addEventListener('load', () => ui.host.classList.add('gms-ready'));
     const el = document.createElement('div');
     el.className = 'gms-app';
-    el.innerHTML = SHELL_HTML;
+    el.innerHTML = outlook ? GMS.OUTLOOK.html() : SHELL_HTML;
     sr.append(css, el);
     el.addEventListener('click', onShellClick);
     el.addEventListener('keydown', onShellKey);
@@ -144,7 +145,13 @@
 
   GMS.ensureShell = () => {
     if (!document.body) return false;
-    if (!ui.shell) ui.shell = buildShell();
+    // Đổi giao diện trong popup -> dựng lại khung theo giao diện mới.
+    if (ui.shell && ui.shellTheme !== GMS.theme()) {
+      ui.host.remove();
+      ui.shell = null;
+      state.lastHtml = '';
+    }
+    if (!ui.shell) { ui.shell = buildShell(); ui.shellTheme = GMS.theme(); }
     if (!ui.host.isConnected) document.body.appendChild(ui.host);
     syncHostClasses();
     const av = q('#gms-avatar');
@@ -238,6 +245,10 @@
     const checked = state.checked.has(t.path);
     const sender = SENT_RE.test(t.snippet) ? `tôi, ${t.name}` : t.name;
     const body = t.snippet.replace(SENT_RE, '') || '(không có nội dung)';
+    if (GMS.theme() === 'outlook') {
+      const current = state.mode === 'thread' && !!state.current && state.current.path === t.path;
+      return GMS.OUTLOOK.row(t, { starred, checked, current, sender, body });
+    }
     return `<div class="gms-row${t.unread ? ' is-unread' : ''}${checked ? ' is-checked' : ''}" data-path="${esc(t.path)}" role="button" tabindex="0">
 <span class="gms-cb${checked ? ' on' : ''}" title="Chọn"></span>
 <button class="gms-star${starred ? ' on' : ''}" data-star="${esc(t.path)}" title="${starred ? 'Có gắn dấu sao' : 'Không gắn dấu sao'}" aria-label="${starred ? 'Bỏ dấu sao' : 'Gắn dấu sao'}">${ico(starred ? 'star' : 'star_border')}</button>
@@ -252,9 +263,10 @@
   GMS.render = (force = false) => {
     if (!ui.shell) return;
     const list = visibleThreads();
+    const empty = GMS.theme() === 'outlook' ? GMS.OUTLOOK.empty : EMPTY;
     const html = list.length
       ? list.map(rowHtml).join('')
-      : `<div class="gms-empty">${state.query ? 'Không có thư nào khớp với tìm kiếm của bạn.' : EMPTY[state.folder] || EMPTY.inbox}</div>`;
+      : `<div class="gms-empty">${state.query ? 'Không có thư nào khớp với tìm kiếm của bạn.' : empty[state.folder] || empty.inbox}</div>`;
     if (force || html !== state.lastHtml) {
       q('#gms-rows').innerHTML = html;
       state.lastHtml = html;
@@ -268,6 +280,11 @@
       const i = list.findIndex((t) => t.path === state.current.path);
       q('#gms-trange').textContent = i >= 0 ? `${fmtN(i + 1)} trong số ${fmtN(list.length)}` : '';
       q('#gms-subject').textContent = state.current.name;
+      const av = q('#gms-sbj-av'); // chỉ có ở giao diện Outlook
+      if (av) {
+        av.className = 'o-av ' + GMS.OUTLOOK.colorClass(state.current.name);
+        av.textContent = GMS.OUTLOOK.initials(state.current.name);
+      }
     }
     GMS.setTitle(unread);
   };
@@ -308,6 +325,7 @@
     const on = GMS.active();
     const narrow = window.innerWidth < 900;
     root.classList.toggle('gms-on', on);
+    root.classList.toggle('gms-outlook', on && GMS.theme() === 'outlook');
     root.classList.toggle('gms-thread', on && state.mode === 'thread');
     root.classList.toggle('gms-collapsed', on && (state.collapsedManual || narrow));
     syncHostClasses();
