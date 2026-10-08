@@ -1,0 +1,233 @@
+﻿/*
+ * Khung giao diện Gmail — nằm trong Shadow DOM nên được cô lập hoàn toàn khỏi CSS của Messenger.
+ * Biến --md-* và --gms-* kế thừa từ <html> (tokens.css, page.css).
+ * Class trạng thái (gms-thread, gms-collapsed) nằm trên phần tử host: dùng :host(.class).
+ */
+
+:host { all: initial; }
+*, *::before, *::after { box-sizing: border-box; }
+
+.gms-app {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  color: var(--md-on-surface);
+  font: 400 14px/20px var(--md-font-plain);
+  -webkit-font-smoothing: antialiased;
+  text-align: left; letter-spacing: normal;
+}
+.gms-app > * { pointer-events: auto; }
+button { font: inherit; color: inherit; background: none; border: 0; margin: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+:is(button, a, .gms-row, .gms-cb):focus-visible { outline: 2px solid var(--md-primary); outline-offset: -2px; }
+
+.gms-ico { width: 24px; height: 24px; fill: currentColor; flex: none; display: block; }
+.gms-spacer { flex: 1; }
+
+/* Nút icon tròn */
+.gms-ib {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #444746; flex: none;
+  transition: background-color .15s;
+}
+.gms-ib:hover { background: rgba(68, 71, 70, .08); }
+.gms-ib:active { background: rgba(68, 71, 70, .12); }
+.gms-ib.sm { width: 40px; height: 40px; }
+.gms-ib.sm .gms-ico { width: 20px; height: 20px; }
+.gms-ib[disabled] { opacity: .38; cursor: default; }
+.gms-ib[disabled]:hover { background: none; }
+
+/* ---------- Thanh trên ---------- */
+.gms-top {
+  position: absolute; top: 0; left: 0; right: 0; height: var(--gms-top);
+  display: flex; align-items: center; padding: 8px 12px 8px 8px;
+  background: var(--md-surface);
+}
+.gms-top-left { display: flex; align-items: center; width: calc(var(--gms-side) - 8px); min-width: 230px; flex: none; }
+.gms-logo { display: flex; align-items: center; gap: 12px; margin-left: 4px; height: 48px; }
+.gms-logo-mark { width: 30px; height: 22.5px; flex: none; }
+.gms-logo span { font: 500 21px/24px var(--md-font-brand); color: #5f6368; letter-spacing: -.2px; }
+
+.gms-search {
+  flex: 1 1 auto; max-width: 720px; height: 48px;
+  display: flex; align-items: center; padding: 0 4px;
+  background: #eaf1fb; border-radius: 24px;
+  transition: background-color .15s, box-shadow .15s;
+}
+.gms-search:focus-within { background: #fff; box-shadow: 0 1px 1px 0 rgba(65, 69, 73, .3), 0 1px 3px 1px rgba(65, 69, 73, .15); }
+.gms-search input {
+  flex: 1; min-width: 0; height: 46px; padding: 0 4px; margin: 0;
+  border: 0; outline: 0; background: transparent; box-shadow: none;
+  font: 400 16px/24px var(--md-font-plain); color: var(--md-on-surface);
+}
+.gms-search input::placeholder { color: #5f6368; opacity: 1; }
+
+.gms-top-right { display: flex; align-items: center; margin-left: auto; padding-left: 16px; }
+.gms-spark { width: 24px; height: 24px; }
+.gms-upgrade {
+  width: 108px; height: 40px; margin: 0 8px; padding: 0 16px; flex: none;
+  border-radius: 20px; background: #d3e3fd; color: #041e49;
+  font: 500 14px/20px var(--md-font-brand); letter-spacing: .1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;
+  transition: box-shadow .15s;
+}
+.gms-upgrade:hover { box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15); }
+.gms-avatar {
+  width: 32px; height: 32px; margin: 0 8px 0 4px; border-radius: 50%; flex: none;
+  background: #1e8e3e; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font: 600 14px/1 var(--md-font-brand); cursor: pointer;
+  box-shadow: 0 0 0 4px var(--md-surface);
+}
+
+/* ---------- Thanh bên ---------- */
+.gms-side {
+  position: absolute; top: var(--gms-top); left: 0; bottom: 0; width: var(--gms-side);
+  background: var(--md-surface); overflow: hidden auto; padding-right: 16px;
+}
+.gms-compose {
+  display: inline-flex; align-items: center; gap: 12px;
+  height: 56px; min-width: 56px; margin: 8px 0 16px 5px; padding: 0 20px 0 16px;
+  background: #c2e7ff; color: #001d35;
+  border-radius: 16px; font: 500 14px/20px var(--md-font-brand); letter-spacing: .25px; white-space: nowrap;
+  transition: box-shadow .15s;
+}
+.gms-compose:hover { box-shadow: 0 1px 3px 0 rgba(60, 64, 67, .3), 0 4px 8px 3px rgba(60, 64, 67, .15); }
+.gms-compose .gms-ico { width: 24px; height: 24px; }
+
+.gms-folder {
+  display: flex; align-items: center; height: 32px;
+  padding: 0 12px 0 22px; border-radius: 0 16px 16px 0;
+  color: #1f1f1f; font: 400 14px/20px var(--md-font-plain); cursor: pointer;
+}
+.gms-folder .gms-ico { width: 20px; height: 20px; margin-right: 18px; color: #444746; }
+.gms-folder .gms-fname { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gms-folder .gms-count { font-size: 12px; letter-spacing: .2px; color: #444746; }
+.gms-folder:hover { background: #e8eaed; }
+.gms-folder.on { background: #d3e3fd; font-weight: 700; color: #001d35; }
+.gms-folder.on .gms-ico, .gms-folder.on .gms-count { color: #001d35; }
+.gms-folder.on .gms-count { font-weight: 700; }
+.gms-labels-h {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px; padding: 0 4px 0 22px;
+  font: 500 16px/24px var(--md-font-brand); color: #1f1f1f;
+}
+
+/* Thu gọn */
+:host(.gms-collapsed) .gms-side { padding-right: 0; }
+:host(.gms-collapsed) .gms-compose { padding: 0; width: 56px; justify-content: center; margin-left: 8px; }
+:host(.gms-collapsed) .gms-compose span,
+:host(.gms-collapsed) .gms-fname,
+:host(.gms-collapsed) .gms-count,
+:host(.gms-collapsed) .gms-labels-h { display: none; }
+:host(.gms-collapsed) .gms-folder { width: 56px; margin-left: 8px; padding: 0; justify-content: center; border-radius: 16px; }
+:host(.gms-collapsed) .gms-folder .gms-ico { margin: 0; }
+:host(.gms-collapsed) .gms-top-left { width: auto; min-width: 0; }
+@media (max-width: 900px) { .gms-upgrade { display: none; } }
+@media (max-width: 700px) { .gms-logo span, .gms-top-right .gms-ib { display: none; } }
+
+/* Lề phải & dưới */
+.gms-gutter-r { position: absolute; top: var(--gms-top); right: 0; bottom: 0; width: 16px; background: var(--md-surface); }
+.gms-gutter-b { position: absolute; left: var(--gms-side); right: 0; bottom: 0; height: 16px; background: var(--md-surface); }
+
+/* ---------- Thẻ nội dung ---------- */
+.gms-card {
+  position: absolute; top: var(--gms-top); left: var(--gms-side); right: 16px; bottom: 16px;
+  background: #fff; border-radius: 16px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.gms-listview, .gms-threadview { display: flex; flex-direction: column; min-height: 0; }
+.gms-listview { flex: 1; }
+:host(.gms-thread) .gms-card { background: transparent; overflow: visible; pointer-events: none; }
+:host(.gms-thread) .gms-listview { display: none; }
+:host(:not(.gms-thread)) .gms-threadview { display: none; }
+.gms-threadview { pointer-events: auto; background: #fff; border-radius: 16px 16px 0 0; height: var(--gms-head); flex: none; }
+
+.gms-toolbar { display: flex; align-items: center; height: 48px; padding: 0 12px 0 16px; flex: none; color: #444746; }
+.gms-range { font-size: 12px; line-height: 16px; color: #444746; margin-right: 10px; white-space: nowrap; letter-spacing: .3px; }
+.gms-sep { width: 1px; height: 20px; background: #c4c7c5; margin: 0 8px; }
+.gms-caret { width: 20px; margin-right: 0; }
+.gms-caret .gms-ico { width: 20px; height: 20px; }
+.gms-first { margin-left: 11px; }
+.gms-input-tools { width: 48px; gap: 0; font-size: 15px; margin-left: 4px; }
+.gms-input-tools span { font: 500 15px/1 var(--md-font-plain); text-decoration: underline; text-underline-offset: 2px; }
+.gms-input-tools .gms-ico { width: 20px; height: 20px; }
+
+.gms-cb {
+  width: 18px; height: 18px; margin: 0 11px; flex: none; position: relative;
+  border: 2px solid #5f6368; border-radius: 2px; cursor: pointer; display: inline-block;
+}
+.gms-cb.on { background: #444746; border-color: #444746; }
+.gms-cb.on::after {
+  content: ""; position: absolute; left: 4px; top: 0; width: 5px; height: 10px;
+  border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.gms-cb-all { margin-left: 1px; margin-right: 0; }
+
+.gms-tabs { display: flex; height: 56px; border-bottom: 1px solid #f1f3f4; flex: none; }
+.gms-tab {
+  width: 254px; max-width: 25%; min-width: 0; display: flex; align-items: center; gap: 16px;
+  padding: 0 16px; color: #444746; font: 500 14px/20px var(--md-font-brand); letter-spacing: .1px;
+  position: relative; cursor: default; white-space: nowrap;
+}
+.gms-tab span { overflow: hidden; text-overflow: ellipsis; }
+.gms-tab:hover { background: #f1f3f4; }
+.gms-tab .gms-ico { width: 20px; height: 20px; }
+.gms-tab.on { color: #0b57d0; }
+.gms-tab.on:hover { background: transparent; }
+.gms-tab.on::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: #0b57d0; }
+
+.gms-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+
+/* ---------- Dòng thư ---------- */
+.gms-row {
+  display: flex; align-items: center; height: 40px; padding: 0 16px 0 0;
+  background: #f2f6fc; border-bottom: 1px solid rgba(100, 121, 143, .12);
+  cursor: pointer; position: relative; color: #1f1f1f;
+}
+.gms-row.is-unread { background: #fff; }
+.gms-row.is-checked { background: #c2dbff; }
+.gms-row:hover { box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15); z-index: 2; }
+.gms-row .gms-cb { margin: 0 11px 0 17px; border-color: #c4c7c5; }
+.gms-row:hover .gms-cb { border-color: #5f6368; }
+.gms-row .gms-cb.on { border-color: #444746; }
+.gms-star { width: 20px; height: 20px; margin-right: 10px; display: inline-flex; align-items: center; justify-content: center; color: #c4c7c5; flex: none; }
+.gms-star .gms-ico { width: 20px; height: 20px; }
+.gms-row:hover .gms-star { color: #5f6368; }
+.gms-star.on, .gms-row:hover .gms-star.on { color: #f4b400; }
+.gms-sender { width: 200px; flex: none; padding-right: 32px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1f1f1f; font-size: 14px; }
+.gms-line { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #5e5e5e; font-size: 14px; }
+.gms-subj { color: #1f1f1f; }
+.gms-date { flex: none; width: 76px; text-align: right; font: 400 12px/16px var(--md-font-plain); color: #5e5e5e; letter-spacing: .3px; }
+.gms-row.is-unread .gms-sender,
+.gms-row.is-unread .gms-subj,
+.gms-row.is-unread .gms-date { font-weight: 700; color: #1f1f1f; }
+.gms-acts { display: none; position: absolute; right: 8px; top: 0; height: 40px; align-items: center; background: inherit; padding-left: 8px; }
+.gms-row:hover .gms-acts, .gms-row:focus-visible .gms-acts { display: flex; }
+.gms-row:hover .gms-date, .gms-row:focus-visible .gms-date { visibility: hidden; }
+
+.gms-empty { padding: 48px 24px; text-align: center; color: #444746; font-size: 14px; }
+.gms-foot {
+  display: flex; justify-content: space-between; gap: 24px;
+  padding: 16px 24px 24px; font-size: 12px; line-height: 16px; color: #5e5e5e;
+}
+.gms-foot span:last-child { text-align: right; }
+
+/* ---------- Thanh tiêu đề khung đọc thư ---------- */
+.gms-subjectbar { display: flex; align-items: center; height: 68px; padding: 0 16px 0 72px; gap: 12px; }
+.gms-subjectbar .gms-h2 {
+  font: 500 22px/28px var(--md-font-brand); color: #1f1f1f;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;
+}
+.gms-chip {
+  flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 4px 0 8px;
+  background: #ddd; border-radius: 4px; font-size: 12px; color: #444746;
+}
+.gms-chip i { font-style: normal; font-size: 13px; padding: 0 2px; cursor: pointer; }
+
+/* ---------- Thanh cuộn kiểu Gmail ---------- */
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-thumb { background: rgba(31, 31, 31, .2); border: 4px solid transparent; background-clip: padding-box; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background-color: rgba(31, 31, 31, .35); }
+::-webkit-scrollbar-track { background: transparent; }
+

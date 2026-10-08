@@ -1,0 +1,25 @@
+/*
+ * Phần nằm ở cấp trang (ngoài Shadow DOM): chống nháy lúc khởi động, kích thước khung,
+ * và phần tử host của khung hộp thư. Chỉ có hiệu lực khi <html> có class gms-on.
+ */
+
+html.gms-boot body { opacity: 0 !important; }
+html.gms-boot { background: #f6f8fc !important; }
+
+html.gms-on {
+  --gms-top: 64px;
+  --gms-side: 252px;
+  --gms-head: 116px;
+}
+html.gms-on.gms-collapsed { --gms-side: 72px; }
+html.gms-on, html.gms-on body { background: var(--md-surface) !important; }
+
+#gms-shell { display: none !important; }
+html.gms-on #gms-shell {
+  display: block !important;
+  position: fixed !important; inset: 0 !important;
+  z-index: 2147483000 !important;
+  pointer-events: none !important;
+  visibility: hidden; /* hiện sau khi stylesheet trong shadow đã tải xong */
+}
+html.gms-on #gms-shell.gms-ready { visibility: visible; }

@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Mail Skin cho Messenger",
+  "version": "1.1.0",
+  "description": "Khoác giao diện kiểu hộp thư Gmail lên Messenger web (messenger.com và facebook.com/messages).",
+  "permissions": ["storage"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Mail Skin cho Messenger",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.messenger.com/*",
+        "https://www.facebook.com/*",
+        "https://web.facebook.com/*"
+      ],
+      "js": [
+        "src/shared/defaults.js",
+        "src/content/core.js",
+        "src/content/icons.js",
+        "src/content/utils.js",
+        "src/content/fonts.js",
+        "src/content/parser.js",
+        "src/content/shell.js",
+        "src/content/thread.js",
+        "src/content/page.js",
+        "src/content/main.js"
+      ],
+      "css": [
+        "src/styles/tokens.css",
+        "src/styles/page.css",
+        "src/styles/thread.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/*.woff2", "src/styles/shell.css"],
+      "matches": [
+        "https://www.messenger.com/*",
+        "https://www.facebook.com/*",
+        "https://web.facebook.com/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+/*
+ * Design tokens theo Material Design 3 (Material You) — bảng màu "baseline" xanh dương.
+ * Dùng chung cho giao diện đè lên Messenger (html.gms-on) và popup (html.gms-popup).
+ * Tham khảo: https://m3.material.io/styles/color/roles
+ */
+html.gms-on,
+html.gms-popup {
+  /* ---- Màu (color roles) ---- */
+  --md-primary: #0b57d0;
+  --md-on-primary: #ffffff;
+  --md-primary-container: #d3e3fd;
+  --md-on-primary-container: #041e49;
+  --md-tertiary-container: #c2e7ff;
+  --md-on-tertiary-container: #001d35;
+  --md-error: #b3261e;
+  --md-star: #f4b400;
+
+  --md-surface: #f6f8fc;
+  --md-surface-container-lowest: #ffffff;
+  --md-surface-container-low: #f2f6fc;
+  --md-surface-container: #f0f4f9;
+  --md-surface-container-high: #e9eef6;
+  --md-surface-container-highest: #dde3ea;
+  --md-on-surface: #1f1f1f;
+  --md-on-surface-variant: #444746;
+  --md-outline: #747775;
+  --md-outline-variant: #c4c7c5;
+  --md-scrim: rgba(0, 0, 0, .32);
+
+  /* ---- State layer (hover / pressed) ---- */
+  --md-state-hover: rgba(68, 71, 70, .08);
+  --md-state-pressed: rgba(68, 71, 70, .12);
+
+  /* ---- Shape ---- */
+  --md-shape-xs: 4px;
+  --md-shape-sm: 8px;
+  --md-shape-md: 12px;
+  --md-shape-lg: 16px;
+  --md-shape-xl: 28px;
+  --md-shape-full: 999px;
+
+  /* ---- Elevation ---- */
+  --md-elevation-1: 0 1px 2px rgba(0, 0, 0, .3), 0 1px 3px 1px rgba(0, 0, 0, .15);
+  --md-elevation-2: 0 1px 2px rgba(0, 0, 0, .3), 0 2px 6px 2px rgba(0, 0, 0, .15);
+  --md-elevation-3: 0 1px 3px rgba(0, 0, 0, .3), 0 4px 8px 3px rgba(0, 0, 0, .15);
+
+  /* ---- Motion ---- */
+  --md-ease: cubic-bezier(.2, 0, 0, 1);
+  --md-ease-emphasized: cubic-bezier(.3, 0, 0, 1);
+  --md-dur-short: 150ms;
+  --md-dur-medium: 250ms;
+
+  /* ---- Typography: Be Vietnam Pro cho tiêu đề / nút, Roboto cho nội dung ---- */
+  --md-font-brand: "GMS Be Vietnam Pro", "Google Sans", "GMS Roboto", Roboto, "Segoe UI", Arial, sans-serif;
+  --md-font-plain: "GMS Roboto", Roboto, "Segoe UI", Arial, sans-serif;
+}

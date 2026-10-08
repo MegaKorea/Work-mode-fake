@@ -1,0 +1,69 @@
+/*
+ * Vùng chat thật của Messenger được đặt vào thẻ trắng (khung đọc thư) và đổi màu theo M3.
+ * Mọi quy tắc chỉ có hiệu lực khi <html> có class gms-on.
+ */
+
+html.gms-on .gms-main {
+  position: fixed !important;
+  top: calc(var(--gms-top) + var(--gms-head)) !important;
+  left: var(--gms-side) !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  width: auto !important; height: auto !important;
+  min-width: 0 !important; min-height: 0 !important;
+  max-width: none !important; max-height: none !important;
+  margin: 0 !important; transform: none !important;
+  z-index: 1 !important;
+  background: var(--md-surface-container-lowest) !important;
+  border-radius: 0 0 var(--md-shape-lg) var(--md-shape-lg) !important;
+  overflow: hidden !important;
+  padding-left: 56px !important;
+  box-sizing: border-box !important;
+  font-family: var(--md-font-plain) !important;
+  /* đổi biến màu của Facebook/Messenger trong vùng này */
+  --primary-text: var(--md-on-surface); --secondary-text: var(--md-on-surface-variant); --placeholder-text: #5f6368;
+  --accent: var(--md-primary); --blue-link: var(--md-primary); --primary-button-background: var(--md-primary);
+  --primary-icon: var(--md-on-surface-variant); --secondary-icon: var(--md-on-surface-variant); --disabled-icon: var(--md-outline-variant);
+  --comment-background: var(--md-surface-container); --surface-background: #fff; --card-background: #fff;
+  --web-wash: #fff; --wash: var(--md-surface-container); --messenger-card-background: #fff;
+  --chat-composer-button-color: var(--md-on-surface-variant); --mwp-primary-theme-color: var(--md-primary);
+  --divider: #e0e0e0; --media-inner-border: #e0e0e0;
+}
+html.gms-on:not(.gms-thread) .gms-main { visibility: hidden !important; }
+html.gms-on .gms-main * { font-family: inherit !important; }
+html.gms-on .gms-unx {
+  transform: none !important; filter: none !important; perspective: none !important;
+  contain: none !important; will-change: auto !important; backdrop-filter: none !important;
+}
+html.gms-on .gms-hidelist,
+html.gms-on [role="banner"]:not(:has(.gms-main)),
+html.gms-on [role="complementary"]:not(:has(.gms-main)) {
+  opacity: 0 !important; pointer-events: none !important;
+}
+html.gms-on .gms-hide { display: none !important; }
+
+/* Bong bóng -> kiểu chat trong hộp thư */
+html.gms-on .gms-main .gms-bubble {
+  background: var(--md-surface-container) !important; background-image: none !important;
+  color: var(--md-on-surface) !important;
+}
+html.gms-on .gms-main .gms-bubble.gms-out { background: var(--md-primary-container) !important; }
+html.gms-on .gms-main .gms-bubble,
+html.gms-on .gms-main .gms-bubble * { color: var(--md-on-surface) !important; }
+html.gms-on .gms-main .gms-bubble a,
+html.gms-on .gms-main .gms-bubble a * { color: var(--md-primary) !important; }
+
+/* Ô soạn tin -> ô trả lời */
+html.gms-on .gms-main .gms-composer {
+  background: var(--md-surface-container-lowest) !important; background-image: none !important;
+  border: 1px solid var(--md-outline-variant) !important; border-radius: var(--md-shape-xl) !important;
+  transition: border-color var(--md-dur-short) var(--md-ease), box-shadow var(--md-dur-short) var(--md-ease);
+}
+html.gms-on .gms-main .gms-composer:focus-within {
+  border-color: var(--md-primary) !important; box-shadow: 0 0 0 1px var(--md-primary);
+}
+html.gms-on .gms-main [contenteditable="true"][role="textbox"] { color: var(--md-on-surface) !important; }
+
+/* Thanh cuộn kiểu Gmail trong vùng chat */
+html.gms-on .gms-main ::-webkit-scrollbar { width: 16px; height: 16px; }
+html.gms-on .gms-main ::-webkit-scrollbar-thumb { background: rgba(31, 31, 31, .2); border: 4px solid transparent; background-clip: padding-box; border-radius: 8px; }

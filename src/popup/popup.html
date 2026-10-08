@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="vi" class="gms-popup">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <title>Mail Skin</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="app-bar">
+    <svg class="logo" viewBox="52 42 88 66" width="40" height="30" aria-hidden="true"><path fill="#4285f4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6"/><path fill="#34a853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15"/><path fill="#fbbc04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2"/><path fill="#ea4335" d="M72 74V48l24 18 24-18v26L96 92"/><path fill="#c5221f" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2"/></svg>
+    <div class="app-title">
+      <h1>Mail Skin</h1>
+      <p>cho Messenger</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- Công tắc chính -->
+    <section class="hero" aria-labelledby="enabled-label">
+      <div class="item-text">
+        <label id="enabled-label" for="enabled" class="item-title">Giao diện hộp thư</label>
+        <span class="item-support">messenger.com và facebook.com/messages</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="enabled" role="switch">
+        <span class="track"><span class="thumb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+      </label>
+    </section>
+
+    <h2 class="section-label">Giao diện</h2>
+    <section class="themes" id="themes" role="radiogroup" aria-label="Chọn giao diện"></section>
+
+    <h2 class="section-label">Hiển thị</h2>
+    <section class="card">
+      <div class="item">
+        <div class="item-text">
+          <label for="favicon" class="item-title">Icon phong bì</label>
+          <span class="item-support">Đổi icon tab thành phong bì thư</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="favicon" role="switch">
+          <span class="track"><span class="thumb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+        </label>
+      </div>
+      <div class="item">
+        <div class="item-text">
+          <label for="hideThreadHeader" class="item-title">Ẩn thanh tên đoạn chat</label>
+          <span class="item-support">Ẩn tên và nút gọi trong đoạn chat</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="hideThreadHeader" role="switch">
+          <span class="track"><span class="thumb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+        </label>
+      </div>
+    </section>
+
+    <h2 class="section-label">Tùy chỉnh</h2>
+    <section class="card fields">
+      <div class="field-wrap">
+        <label class="field">
+          <input type="text" id="titleTpl" placeholder=" " spellcheck="false" autocomplete="off">
+          <span class="field-label">Tiêu đề tab</span>
+        </label>
+        <p class="supporting">Dùng <code>{n}</code> cho số đoạn chat chưa đọc.</p>
+      </div>
+      <div class="field-wrap">
+        <label class="field">
+          <input type="text" id="avatar" maxlength="1" placeholder=" " spellcheck="false" autocomplete="off">
+          <span class="field-label">Chữ trên ảnh đại diện</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="tips" aria-label="Phím tắt">
+      <h2 class="section-label">Phím tắt</h2>
+      <ul>
+        <li><span><kbd>Alt</kbd><kbd>Shift</kbd><kbd>G</kbd></span>Bật / tắt nhanh</li>
+        <li><span><kbd>u</kbd> <em>hoặc</em> <kbd>Esc</kbd></span>Quay lại hộp thư</li>
+        <li><span><kbd>/</kbd></span>Tìm kiếm</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <button type="button" id="reset" class="text-button">Khôi phục mặc định</button>
+    <span id="version" class="version"></span>
+  </footer>
+
+  <script src="../shared/defaults.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
