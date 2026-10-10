@@ -9,24 +9,39 @@
 
   let tickTimer = null;
 
+  let lastScanAt = 0;
   GMS.tick = () => {
     GMS.applyClasses();
     if (!GMS.active()) return;
     GMS.injectFonts();
     if (!GMS.ensureShell()) return;
     const m = GMS.applyMain();
-    GMS.scan();
-    GMS.render();
-    if (state.mode === 'thread') GMS.styleThread(m);
+    const now = Date.now();
+    if (state.mode === 'list') {
+      GMS.scan();
+      GMS.render();
+      lastScanAt = now;
+    } else if (state.mode === 'thread') {
+      GMS.styleThread(m);
+      if (now - lastScanAt > 4000) {
+        GMS.scan();
+        lastScanAt = now;
+      }
+    }
     GMS.setFavicon();
   };
 
   function teardown() {
     GMS.applyClasses();
     GMS.ui.host?.remove();
-    ['gms-main', 'gms-unx', 'gms-hidelist', 'gms-bubble', 'gms-out', 'gms-composer', 'gms-hide'].forEach((c) =>
+    ['gms-main', 'gms-unx', 'gms-hidelist', 'gms-bubble', 'gms-out', 'gms-composer', 'gms-hide', 'gms-hide-sidebar', 'gms-hide-header'].forEach((c) =>
       document.querySelectorAll('.' + c).forEach((x) => x.classList.remove(c)));
-    document.querySelectorAll('[data-gms-b]').forEach((x) => x.removeAttribute('data-gms-b'));
+    document.querySelectorAll('.gms-mail-head, .gms-quick-actions, .gms-reply-head, .gms-reply-foot').forEach((x) => x.remove());
+    document.querySelectorAll('[data-gms-b], [data-gms-card], [data-gms-toast]').forEach((x) => {
+      x.removeAttribute('data-gms-b');
+      x.removeAttribute('data-gms-card');
+      x.removeAttribute('data-gms-toast');
+    });
     GMS.restoreFavicon();
   }
 
@@ -51,6 +66,26 @@
     }
     if (!GMS.active() || e.ctrlKey || e.metaKey || e.altKey) return;
     const tgt = e.composedPath()[0]; // e.target bị retarget thành host khi gõ trong ô tìm kiếm (shadow DOM)
+    if (e.key === 'Escape') {
+      const emojiPicker = GMS.ui.shell?.querySelector('#gms-emoji-picker');
+      if (emojiPicker && emojiPicker.classList.contains('on')) {
+        e.preventDefault(); e.stopPropagation();
+        emojiPicker.classList.remove('on');
+        return;
+      }
+      if (state.replyOpen) {
+        const replyInput = GMS.ui.shell?.querySelector('#gms-reply-input');
+        if (replyInput && !replyInput.value.trim() && (!state.pendingFiles || !state.pendingFiles.length)) {
+          e.preventDefault(); e.stopPropagation();
+          state.replyOpen = false;
+          const dock = GMS.ui.shell?.querySelector('#gms-reply-dock');
+          const quick = GMS.ui.shell?.querySelector('#gms-quick-actions');
+          if (dock) dock.style.display = 'none';
+          if (quick) quick.style.display = 'flex';
+          return;
+        }
+      }
+    }
     const typing = tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName));
     if (!typing && state.mode === 'thread' && (e.key === 'u' || e.key === 'Escape') && !document.querySelector('[role="dialog"]')) {
       e.preventDefault(); e.stopPropagation();

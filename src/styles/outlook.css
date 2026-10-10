@@ -161,7 +161,15 @@ a { color: inherit; text-decoration: none; }
 .o-filter .gms-ico { width: 18px; height: 18px; }
 .gms-range { display: none; }
 
-.gms-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+.gms-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  touch-action: pan-y;
+}
 .o-group { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; font-weight: 600; color: #242424; }
 .o-group .gms-ico { width: 14px; height: 14px; color: #616161; }
 
@@ -235,9 +243,10 @@ a { color: inherit; text-decoration: none; }
 .o-empty .gms-ico { width: 96px; height: 96px; margin-bottom: 12px; color: #c7c7c7; }
 .o-empty h2 { margin: 0; font: 600 20px/28px var(--md-font-brand); color: #242424; }
 .o-empty p { margin: 0; font-size: 14px; }
-:host(.gms-thread) .o-read { background: transparent; }
+:host(.gms-thread) .o-read { background: #fff; pointer-events: auto; }
 :host(.gms-thread) .o-empty { display: none; }
 :host(:not(.gms-thread)) .o-subject { display: none; }
+:host(:not(.gms-thread)) .gms-thread-scroll { display: none; }
 .o-subject {
   position: absolute; top: 0; left: 0; right: 0; height: var(--gms-head); pointer-events: auto;
   display: flex; align-items: center; gap: 12px; padding: 0 12px 0 16px;
@@ -247,6 +256,20 @@ a { color: inherit; text-decoration: none; }
 .o-stext { flex: 1; min-width: 0; }
 .o-stitle { font: 600 18px/24px var(--md-font-brand); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #242424; }
 .o-ssub { font-size: 12px; line-height: 16px; color: #616161; }
+
+.o-read .gms-thread-scroll {
+  position: absolute;
+  top: var(--gms-head);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-left: 1px solid #e0e0e0;
+}
 
 /* ---------- Thanh cuộn ---------- */
 ::-webkit-scrollbar { width: 12px; height: 12px; }

@@ -1,14 +1,14 @@
 /*
- * Vùng chat thật của Messenger đóng vai khung đọc thư:
- * tìm vùng đó, gỡ transform ở tổ tiên, đổi bong bóng / ô soạn tin / ẩn thanh tiêu đề.
+ * Quản lý vùng chat Messenger chạy nền:
+ * - Định vị vùng chat thật và giấu ẩn hoàn toàn khỏi màn hình
+ * - Theo dõi DOM mutation của Messenger để tự động parse JSON và cập nhật giao diện Gmail trong Shadow DOM
+ * - Tự động kích hoạt tải tin nhắn cũ khi cuộn lên trên
  */
 (() => {
   if (GMS.disabled) return;
-  const { root, ui } = GMS;
+  const { root, ui, state } = GMS;
 
-  const CALL_LABEL_RE = /cuộc gọi|gọi thoại|gọi video|voice call|video call|start a call/i;
   const countLinks = (n) => n.querySelectorAll('a[href*="/t/"]').length;
-  const textbox = (scope) => scope.querySelector('[contenteditable="true"][role="textbox"]');
 
   function pickMain() {
     const tb = [...document.querySelectorAll('[contenteditable="true"][role="textbox"]')]
@@ -27,7 +27,6 @@
     return [...document.querySelectorAll('[role="main"]')].find((m) => countLinks(m) < 3) || null;
   }
 
-  // Gỡ transform/filter ở tổ tiên để position:fixed bám đúng cửa sổ.
   function needsUnwrap(cs) {
     return cs.transform !== 'none' || cs.filter !== 'none' || cs.perspective !== 'none' ||
       /paint|layout|strict|content/.test(cs.contain) || /transform|filter/.test(cs.willChange) ||
@@ -45,66 +44,88 @@
     return m;
   };
 
-  // ---------- bong bóng chat -> kiểu chat trong hộp thư ----------
-  function isPainted(cs) {
-    const bg = cs.backgroundColor;
-    const painted = bg && bg !== 'transparent' && !/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*0\s*\)/.test(bg) && !/^rgb\(255,\s*255,\s*255\)$/.test(bg);
-    return painted || (cs.backgroundImage && cs.backgroundImage !== 'none' && /gradient/.test(cs.backgroundImage));
-  }
-
-  // Leo từ `start` lên tối đa `maxUp` cấp, trả về phần tử đầu tiên bo góc >= `radius` và có màu nền.
-  function findPainted(start, stop, maxUp, radius) {
-    let node = start;
-    for (let i = 0; i < maxUp && node && node !== stop; i++, node = node.parentElement) {
-      const cs = getComputedStyle(node);
-      if (parseFloat(cs.borderTopLeftRadius) >= radius && isPainted(cs)) return node;
-    }
-    return null;
-  }
-
-  function styleBubbles(m, mr) {
-    const mid = mr.left + mr.width / 2;
-    let n = 0;
-    for (const t of m.querySelectorAll('div[dir="auto"]:not([data-gms-b])')) {
-      if (++n > 400) break;
-      if (t.closest('[contenteditable="true"]')) continue;
-      const bubble = findPainted(t, m, 7, 8);
-      if (!bubble) continue;
-      t.setAttribute('data-gms-b', '1');
-      const r = bubble.getBoundingClientRect();
-      if (r.width === 0) { t.removeAttribute('data-gms-b'); continue; }
-      bubble.classList.add('gms-bubble');
-      bubble.classList.toggle('gms-out', r.left + r.width / 2 > mid && r.right > mr.right - mr.width * 0.25);
-    }
-  }
-
-  function styleComposer(m) {
-    const tb = textbox(m);
-    if (!tb || m.querySelector('.gms-composer')) return;
-    findPainted(tb.parentElement, m, 8, 12)?.classList.add('gms-composer');
-  }
-
-  // Thanh tiêu đề đoạn chat (tên + nút gọi) -> ẩn, đã có tiêu đề thư thay thế.
-  function hideThreadHeader(m, mr) {
-    if (m.querySelector('.gms-hide')) return;
-    const callBtn = [...m.querySelectorAll('[aria-label]')].find((x) => CALL_LABEL_RE.test(x.getAttribute('aria-label')));
-    if (!callBtn) return;
-    let node = callBtn;
-    for (let i = 0; i < 12 && node && node !== m; i++, node = node.parentElement) {
-      const r = node.getBoundingClientRect();
-      if (r.width >= mr.width * 0.8 && r.height >= 40 && r.height <= 110 && r.top - mr.top < 30) {
-        node.classList.add('gms-hide');
-        break;
+  GMS.findNativeScrollEl = (m) => {
+    if (!m) return null;
+    const candidates = [
+      ...m.querySelectorAll('[role="grid"], [data-scope="messages_table"], div'),
+      m
+    ];
+    for (const el of candidates) {
+      const oy = getComputedStyle(el).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 10) {
+        return el;
       }
     }
-  }
+    return null;
+  };
+
+  GMS.scrollNativeThreadToBottom = (m) => {
+    const scrollEl = GMS.findNativeScrollEl(m || GMS.applyMain());
+    if (scrollEl) {
+      if (scrollEl.scrollTop < scrollEl.scrollHeight - scrollEl.clientHeight - 20) {
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+        scrollEl.dispatchEvent(new Event('scroll', { bubbles: true }));
+      }
+    }
+  };
+
+  // Cuộn vùng chat nền lên đỉnh để Messenger tự gửi request tải thêm lịch sử tin nhắn cũ
+  let loadMoreThreadAt = 0;
+  GMS.loadOlderThreadMessages = () => {
+    if (Date.now() - loadMoreThreadAt < 1000) return;
+    loadMoreThreadAt = Date.now();
+    const m = GMS.applyMain();
+    if (!m) return;
+
+    const scrollEl = GMS.findNativeScrollEl(m);
+    if (scrollEl) {
+      scrollEl.scrollTop = 0;
+      scrollEl.dispatchEvent(new Event('scroll', { bubbles: true }));
+      setTimeout(() => {
+        if (state.mode === 'thread') {
+          GMS.renderThread(m);
+        }
+      }, 700);
+    }
+  };
+
+  let obs = null;
+  let lastObserved = null;
+  let obsTimer = null;
+  let lastRenderedThreadPath = '';
 
   GMS.styleThread = (m) => {
     if (!m) return;
-    const mr = m.getBoundingClientRect();
-    if (mr.width < 50) return;
-    styleBubbles(m, mr);
-    styleComposer(m);
-    if (GMS.settings.hideThreadHeader) hideThreadHeader(m, mr);
+    if (state.mode === 'thread') {
+      GMS.scrollNativeThreadToBottom(m);
+
+      const curPath = state.current?.path || '';
+      if (lastRenderedThreadPath !== curPath) {
+        lastRenderedThreadPath = curPath;
+      }
+      GMS.renderThread(m);
+
+      if (obs && lastObserved !== m) {
+        obs.disconnect();
+        obs = null;
+      }
+
+      if (!obs) {
+        lastObserved = m;
+        obs = new MutationObserver(() => {
+          if (state.mode === 'thread') {
+            if (obsTimer) clearTimeout(obsTimer);
+            obsTimer = setTimeout(() => {
+              obsTimer = null;
+              if (state.mode === 'thread') {
+                GMS.scrollNativeThreadToBottom(m);
+                requestAnimationFrame(() => GMS.renderThread(m));
+              }
+            }, 80);
+          }
+        });
+        obs.observe(m, { childList: true, subtree: true, characterData: true });
+      }
+    }
   };
 })();
