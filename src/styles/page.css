@@ -9,7 +9,8 @@ html.gms-boot { background: #f6f8fc !important; }
 html.gms-on {
   --gms-top: 64px;
   --gms-side: 252px;
-  --gms-head: 116px;
+  --gms-head: 156px;
+  --gms-rail: 56px;
 }
 html.gms-on.gms-collapsed { --gms-side: 72px; }
 html.gms-on, html.gms-on body { background: var(--md-surface) !important; }

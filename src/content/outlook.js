@@ -135,8 +135,45 @@
     <span class="o-av" id="gms-sbj-av"></span>
     <div class="o-stext"><div class="o-stitle" id="gms-subject"></div><div class="o-ssub">Hộp thư đến</div></div>
     <span class="gms-range" id="gms-trange"></span>
-    ${ib('Trả lời', 'reply')}${ib('Trả lời tất cả', 'reply_all')}${ib('Chuyển tiếp', 'forward')}${ib('Thêm', 'more')}
+    ${ib('Trả lời', 'reply', { act: 'reply' })}${ib('Trả lời tất cả', 'reply_all')}${ib('Chuyển tiếp', 'forward')}${ib('Thêm', 'more')}
     ${ib('Đóng', 'close', { act: 'back' })}
+  </div>
+  <div class="gms-thread-scroll" id="gms-thread-scroll">
+    <div class="gms-thread-rows" id="gms-thread-rows"></div>
+    <div class="gms-quick-actions">
+      <button class="gms-quick-pill" data-act="reply">${ico('reply')}<span>Trả lời</span></button>
+      <button class="gms-quick-pill" data-act="forward">${ico('forward')}<span>Chuyển tiếp</span></button>
+      <button class="gms-quick-pill gms-quick-emoji" data-act="emoji" title="Thêm biểu tượng cảm xúc">${ico('mood')}</button>
+    </div>
+    <div class="gms-reply-dock" id="gms-reply-dock">
+      <div class="gms-reply-head">${ico('reply')}<span id="gms-reply-title">Trả lời</span></div>
+      <div class="gms-reply-previews" id="gms-reply-previews"></div>
+      <textarea id="gms-reply-input" class="gms-reply-input" placeholder="Soạn thư trả lời..." rows="2"></textarea>
+      <div class="gms-reply-foot">
+        <button id="gms-send-btn" class="gms-send-btn" type="button" data-act="send">Gửi</button>
+        <button class="gms-tool-btn" data-act="format" title="Tùy chọn định dạng">${ico('format_color_text')}</button>
+        <button class="gms-tool-btn" data-tool="attach" title="Đính kèm tệp">${ico('attach_file')}</button>
+        <button class="gms-tool-btn" data-tool="photo" title="Chèn ảnh">${ico('insert_photo')}</button>
+        <button class="gms-tool-btn" data-tool="link" title="Chèn liên kết">${ico('insert_link')}</button>
+        <button class="gms-tool-btn" data-act="toggle-emoji" title="Chèn biểu tượng cảm xúc">${ico('mood')}</button>
+        <div class="gms-spacer"></div>
+        <button class="gms-tool-btn" data-act="discard" title="Xóa thư nháp">${ico('del')}</button>
+        <button class="gms-tool-btn" title="Tùy chọn khác">${ico('more_vert')}</button>
+      </div>
+      <input type="file" id="gms-file-input" style="display: none;" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip">
+    </div>
+    <div class="gms-emoji-picker" id="gms-emoji-picker">
+      <div class="gms-emoji-head">
+        <input type="text" id="gms-emoji-search" class="gms-emoji-search" placeholder="Tìm biểu tượng..." autocomplete="off">
+      </div>
+      <div class="gms-emoji-grid" id="gms-emoji-grid"></div>
+    </div>
+    <div class="gms-dropzone" id="gms-dropzone">
+      <div class="gms-dropzone-box">
+        <div class="gms-dropzone-icon">${ico('insert_photo')}</div>
+        <div class="gms-dropzone-text">Thả hình ảnh hoặc tệp vào đây để gửi</div>
+      </div>
+    </div>
   </div>
 </div>`;
 
